@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mysql-db:
-    container_name: mysql-db
+    #container_name: mysql-db
     image: mysql
     env_file: ./.env
     environment:
@@ -20,7 +20,8 @@ services:
       timeout: 20s
 
   java-spring-github-actions-workflow:
-    container_name: java-spring-github-actions-workflow
+    #container_name: java-spring-github-actions-workflow
+    env_file: ./.env
     build:
       context: ./
       dockerfile: Dockerfile
@@ -32,7 +33,6 @@ services:
     networks:
       spring-boot-mysql-net:
     restart: on-failure
-    env_file: ./.env
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/$MYSQL_DB_NAME?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: $MYSQL_ROOT_USERNAME
