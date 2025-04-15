@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  mysql-db:
+    container_name: mysql-db
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD"
+      - MYSQL_USER="$MYSQL_USER"
+    ports:
+      - $MYSQL_DB_PORT:$MYSQL_DB_PORT
+    restart: always
+    networks:
+      spring-boot-mysql-net:
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      retries: 10
+      interval: 3s
+      timeout: 20s
+
+  java-spring-boot-mysql-webservices:
+    container_name: java-spring-github-actions-workflow
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - $SPRING_BOOT_PORT:$SPRING_BOOT_PORT
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    networks:
+      spring-boot-mysql-net:
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/$MYSQL_DB_NAME?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: $MYSQL_ROOT_USERNAME
+      SPRING_DATASOURCE_PASSWORD: $MYSQL_ROOT_PASSWORD
+
+networks:
+  spring-boot-mysql-net:
