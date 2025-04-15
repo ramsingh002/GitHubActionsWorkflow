@@ -4,6 +4,7 @@ services:
   mysql-db:
     container_name: mysql-db
     image: mysql
+    env_file: ./.env
     environment:
       - MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD"
       - MYSQL_USER="$MYSQL_USER"
@@ -18,7 +19,7 @@ services:
       interval: 3s
       timeout: 20s
 
-  java-spring-boot-mysql-webservices:
+  java-spring-github-actions-workflow:
     container_name: java-spring-github-actions-workflow
     build:
       context: ./
@@ -31,6 +32,7 @@ services:
     networks:
       spring-boot-mysql-net:
     restart: on-failure
+    env_file: ./.env
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/$MYSQL_DB_NAME?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: $MYSQL_ROOT_USERNAME
